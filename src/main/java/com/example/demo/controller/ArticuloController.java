@@ -1,13 +1,14 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.request.ArticuloCreateDto;
+import com.example.demo.dto.response.ArticuloResponseDto;
 import com.example.demo.entity.ArticuloEntity;
 import com.example.demo.repository.ArticuloRepository;
 import com.example.demo.service.ArticuloService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.List;
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/api/v1/articulos")
 public class ArticuloController {
@@ -19,38 +20,19 @@ public class ArticuloController {
         this.articuloService = articuloService;
     }
 
-    @GetMapping()
-    public List<ArticuloEntity> listarTodos() {
-        return articuloRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ArticuloEntity> findById(@PathVariable Integer id) {
-        return articuloRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // hacer un find para articulo en el cual enviemos los siguientes parametros
-    // fechaCreacion
-    // fechaActualizacion
-    // traer los articulos en los que la fecha de creacion sea mayor a una determinada fecha
-    // o que su fecha de actualizacion sea menor a una determinada fecha
-
-    @GetMapping("/find")
-    public ResponseEntity<List<ArticuloEntity>> findArticulos(
-            @RequestParam Date fecha
-    ) {
-        return ResponseEntity.ok(articuloRepository.findArticulosByFechas(fecha));
-    }
-
-    /*public ResponseEntity<List<ArticuloEntity>> findArticulos(){
-        return articuloRepository.findAll();
-    }*/
-
-    /// /////////////segunda version
     @PostMapping("/save")
-    public ArticuloEntity save(@RequestBody ArticuloEntity articulo) {
+    public ArticuloEntity save(@RequestBody ArticuloCreateDto articulo) {
         return articuloService.create(articulo);
+    }
+
+    @PostMapping("/categoria")
+    public ArticuloEntity agregarCategorias(
+            @RequestParam int articuloId,
+            @RequestParam ArrayList<Integer> idCategorias){
+        return articuloService.agregarCategoria(articuloId, idCategorias);
+    }
+    @GetMapping("/{id}")
+    public ArticuloResponseDto findById(@PathVariable int id) {
+        return articuloService.findById(id);
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,11 +21,6 @@ public class CategoriaEntity {
     @Column(name = "nombre_categoria")
     private String nombreCategoria;
 
-    @ManyToMany
-    @JoinTable(
-            name = "articulo_categoria",
-            joinColumns = @JoinColumn(name = "categoria_id"),
-            inverseJoinColumns = @JoinColumn(name = "articulo_id")
-    )
-    ArrayList<ArticuloEntity> articulos;
+    @ManyToMany(mappedBy = "categorias")
+    private List<ArticuloEntity> articulos;
 }
